@@ -1,23 +1,19 @@
-import logo from './logo.svg';
 import './App.css';
+import DynamicTable from './components/DynamicTable';
 
 function App() {
+
+  const data = [
+    { Nombre: "Juan", Edad: 32, Ciudad: "París"},
+    { Nombre: "Pablo", Edad: 25, Ciudad: "New York"},
+    { Nombre: "Antonio", Edad: 17, Ciudad: "Madrid"},
+    { Nombre: "Sara", Edad: 43, Ciudad: "Italia"},
+    { Nombre: "Belén", Edad: 29, Ciudad: "Londres"}
+  ];
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <DynamicTable data={data}/>
     </div>
   );
 }
