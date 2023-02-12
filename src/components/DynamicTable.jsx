@@ -1,23 +1,12 @@
 import '../styles/DynamicTable.css';
-import React, { useState } from 'react';
+import { sortTable } from '../reducers/tableSlice.js'
+import { useSelector, useDispatch } from 'react-redux';
 
-const DynamicTable = (props) => {
-    const [table, setTable] = useState(props.data);
-    const [order, setOrder] = useState("");
-
-    // función para ordenar la tabla en función de donde se haya pulsado (param)
-    // se actualiza el estado con la nueva ordenación y se renderiza en pantalla
-    const handleSort = (param) => {
-        setOrder(param);
-        setTable(
-            table.sort((a, b) => {
-                if (a[param] < b[param]) return -1;
-                if (a[param] > b[param]) return 1;
-                return 0;
-            })
-        );
-    }
-
+const DynamicTable = () => {
+    const data = useSelector(state => state.table)
+    const dispatch = useDispatch();
+        const handleSort = (param) => dispatch(sortTable(param));
+    
     return (
         <div className="table-container">
             <table className="table">
@@ -30,7 +19,7 @@ const DynamicTable = (props) => {
                 </thead>
                 <tbody>
                     {
-                        props.data.map((row, index) => {
+                        data.table.map((row, index) => {
                             return (
                                 <tr key={index}>
                                     <td>{row.Nombre}</td>
