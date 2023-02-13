@@ -4,22 +4,24 @@ import { act } from "react-dom/test-utils";
 const initialState = {
     searchterm:"",
     filteredTable: "",
+    checked: false,
     table: [
-    { Nombre: "Juan", Edad: 32, Ciudad: "París" },
-    { Nombre: "Pablo", Edad: 25, Ciudad: "New York" },
-    { Nombre: "Antonio", Edad: 17, Ciudad: "Madrid" },
-    { Nombre: "Sara", Edad: 43, Ciudad: "Roma" },
-    { Nombre: "Belén", Edad: 23, Ciudad: "Londres" },
-    { Nombre: "Patricia", Edad: 15, Ciudad: "Tokio" },
-    { Nombre: "Jose", Edad: 24, Ciudad: "Singapur" },
-    { Nombre: "Marta", Edad: 28, Ciudad: "Berlin" },
-    { Nombre: "Adrián", Edad: 37, Ciudad: "Barcelona" }
+    { Id: 1, Nombre: "Juan", Edad: 32, Ciudad: "París" },
+    { Id: 2, Nombre: "Pablo", Edad: 25, Ciudad: "New York" },
+    { Id: 3, Nombre: "Antonio", Edad: 17, Ciudad: "Madrid" },
+    { Id: 4, Nombre: "Sara", Edad: 43, Ciudad: "Roma" },
+    { Id: 5, Nombre: "Belén", Edad: 23, Ciudad: "Londres" },
+    { Id: 6, Nombre: "Patricia", Edad: 15, Ciudad: "Tokio" },
+    { Id: 7, Nombre: "Jose", Edad: 24, Ciudad: "Singapur" },
+    { Id: 8, Nombre: "Marta", Edad: 28, Ciudad: "Berlin" },
+    { Id: 9, Nombre: "Adrián", Edad: 37, Ciudad: "Barcelona" }
     ]
 };
 
 export const tableSlice = createSlice({
     name: 'table',
     initialState: initialState,
+    checked: false,
     reducers: {
         sortTable: (state, action) => {
             const param = action.payload;
@@ -47,10 +49,13 @@ export const tableSlice = createSlice({
         },
         resetTable: (state, action) => {
             state = initialState;
+        },
+        toggleIdColumn: (state, action) => {
+            state.checked = !state.checked;
         }
     }
 });
 
-export const { sortTable, filteredTable, resetTable } = tableSlice.actions;
+export const { sortTable, filteredTable, resetTable, toggleIdColumn } = tableSlice.actions;
 
 export default tableSlice.reducer;
