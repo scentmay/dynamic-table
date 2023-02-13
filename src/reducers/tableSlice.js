@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { act } from "react-dom/test-utils";
 
 const initialState = {
     searchterm:"",
@@ -28,9 +29,28 @@ export const tableSlice = createSlice({
                 return 0;
             })
         },
+        filteredTable: (state, action) => {
+            const filter = action.payload.search;
+            const column = action.payload.column;
+            console.log(filter, column)
+            const filteredResult = state.table.filter(row => {
+                if (column === "Nombre") return row.Nombre.toLowerCase().includes(filter.toLowerCase());
+                if (column === "Edad") return row.Edad.toString().includes(filter);
+                if (column === "Ciudad") return row.Ciudad.toLowerCase().includes(filter.toLowerCase());
+                else return(
+                    row.Nombre.toLowerCase().includes(filter.toLowerCase()) ||
+                    row.Edad.toString().includes(filter) ||
+                    row.Ciudad.toLowerCase().includes(filter.toLowerCase())
+                );
+            })
+            state.table = filteredResult;
+        },
+        resetTable: (state, action) => {
+            state = initialState;
+        }
     }
 });
 
-export const { sortTable } = tableSlice.actions;
+export const { sortTable, filteredTable, resetTable } = tableSlice.actions;
 
 export default tableSlice.reducer;
