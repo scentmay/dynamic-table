@@ -3,7 +3,7 @@ import { sortTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow,
 import { useSelector, useDispatch } from 'react-redux';
 
 
-const DynamicTable = () => {
+const DynamicTable = ({ actionButtons }) => {
     const data = useSelector(state => state.table);
     const showIdColumn = useSelector(state => state.table.checked);
     const table = useSelector(state => state.table.table);
@@ -55,6 +55,7 @@ const DynamicTable = () => {
                         />
                         <button className="trashButton" onClick={handletrash} ><i className="fa-solid fa-trash fa-sm"></i></button>
                         </th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,6 +73,7 @@ const DynamicTable = () => {
                                         checked={selectedRows.includes(index)}
                                         />
                                     </td>
+                                    <td>{actionButtons}</td>
                                 </tr>
                             );
                         })
