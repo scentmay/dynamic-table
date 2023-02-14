@@ -1,16 +1,37 @@
 import '../styles/DynamicTable.css';
-import { sortTable, toggleIdColumn } from '../reducers/tableSlice.js'
+import { sortTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable } from '../reducers/tableSlice.js'
 import { useSelector, useDispatch } from 'react-redux';
 
 
 const DynamicTable = () => {
-    const data = useSelector(state => state.table)
-    const showIdColumn = useSelector(state => state.table.checked)
+    const data = useSelector(state => state.table);
+    const showIdColumn = useSelector(state => state.table.checked);
+    const table = useSelector(state => state.table.table);
+    const selectedRows = useSelector(state => state.table.selectedRows);
     const dispatch = useDispatch();
+
+    console.log(selectedRows)
+
 
     const handleSort = (param) => dispatch(sortTable(param));
     const handleCheck = () => {
         dispatch(toggleIdColumn());
+    }
+
+    const handleSelectOrDeselectAll = () => {
+        dispatch(selectOrDeselectAll());
+    }
+
+    const handleSelection = (index) => {
+        dispatch(
+            selectedRows.includes(index)
+            ? deselectRow(index)
+            : selectRow(index)
+        )
+    }
+
+    const handletrash = () => {
+        dispatch(trashTable());
     }
 
     return (
@@ -22,10 +43,18 @@ const DynamicTable = () => {
                             type="checkbox"
                             checked={showIdColumn}
                             onChange={handleCheck}
-                            ></input>Id</th>
+                            >
+                        </input>Id</th>
                         <th onClick={() => handleSort("Nombre")}>Nombre</th>
                         <th onClick={() => handleSort("Edad")}>Edad</th>
                         <th onClick={() => handleSort("Ciudad")}>Ciudad</th>
+                        <th><input
+                            type="checkbox"
+                            onChange={handleSelectOrDeselectAll}
+                            checked={selectedRows.length === table.length}
+                        />
+                        <button className="trashButton" onClick={handletrash} ><i className="fa-solid fa-trash fa-sm"></i></button>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,6 +66,12 @@ const DynamicTable = () => {
                                     <td>{row.Nombre}</td>
                                     <td>{row.Edad}</td>
                                     <td>{row.Ciudad}</td>
+                                    <td><input 
+                                        type="checkbox"
+                                        onChange={() => handleSelection(index)}
+                                        checked={selectedRows.includes(index)}
+                                        />
+                                    </td>
                                 </tr>
                             );
                         })

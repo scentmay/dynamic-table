@@ -23,3 +23,9 @@ th {
     padding: 8px;
     font-weight: 400;
 }
+
+.trashButton {
+    border: none;
+    padding: 2px 5px;
+    border-radius: 7px;
+}

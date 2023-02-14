@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { act } from "react-dom/test-utils";
 
 const initialState = {
     searchterm:"",
     filteredTable: "",
+    selectedRows: [],
     checked: false,
     table: [
     { Id: 1, Nombre: "Juan", Edad: 32, Ciudad: "París" },
@@ -52,10 +52,28 @@ export const tableSlice = createSlice({
         },
         toggleIdColumn: (state, action) => {
             state.checked = !state.checked;
+        },
+        selectOrDeselectAll: state => {
+            if (state.selectedRows == "") {
+                state.selectedRows = state.table.map((_, index) => index);
+            }else {
+                state.selectedRows = [];
+            }
+        },
+        selectRow: (state, action) => {
+            state.selectedRows.push(action.payload)
+        },
+        deselectRow: (state, action) => {
+            state.selectedRows = state.selectedRows.filter( index => index !== action.payload)
+        },
+        trashTable: (state, action) => {
+            // pasan a formar parte del nuevo arreglo con filter aquellos elementos cuya expresión evalúe a True
+            //Esta expresión se ejecuta para cada uno de ellos
+            state.table = state.table.filter((row, index) => !state.selectedRows.includes(index));
         }
     }
 });
 
-export const { sortTable, filteredTable, resetTable, toggleIdColumn } = tableSlice.actions;
+export const { sortTable, filteredTable, resetTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable } = tableSlice.actions;
 
 export default tableSlice.reducer;
