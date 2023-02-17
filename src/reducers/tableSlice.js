@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    searchterm:"",
     filteredTable: "",
     selectedRows: [],
     checked: false,
+    page: 1,
+    pageSize: 5,
+    totalItems: 18,
     table: [
     { Id: 1, Nombre: "Juan", Edad: 32, Ciudad: "París" },
     { Id: 2, Nombre: "Pablo", Edad: 25, Ciudad: "New York" },
@@ -14,17 +16,33 @@ const initialState = {
     { Id: 6, Nombre: "Patricia", Edad: 15, Ciudad: "Tokio" },
     { Id: 7, Nombre: "Jose", Edad: 24, Ciudad: "Singapur" },
     { Id: 8, Nombre: "Marta", Edad: 28, Ciudad: "Berlin" },
-    { Id: 9, Nombre: "Adrián", Edad: 37, Ciudad: "Barcelona" }
+    { Id: 9, Nombre: "Adrián", Edad: 37, Ciudad: "Barcelona" },
+    { Id: 10, Nombre: "Juan", Edad: 32, Ciudad: "París" },
+    { Id: 11, Nombre: "Pablo", Edad: 25, Ciudad: "New York" },
+    { Id: 12, Nombre: "Antonio", Edad: 17, Ciudad: "Madrid" },
+    { Id: 13, Nombre: "Sara", Edad: 43, Ciudad: "Roma" },
+    { Id: 14, Nombre: "Belén", Edad: 23, Ciudad: "Londres" },
+    { Id: 15, Nombre: "Patricia", Edad: 15, Ciudad: "Tokio" },
+    { Id: 16, Nombre: "Jose", Edad: 24, Ciudad: "Singapur" },
+    { Id: 17, Nombre: "Marta", Edad: 28, Ciudad: "Berlin" },
+    { Id: 18, Nombre: "Adrián", Edad: 37, Ciudad: "Barcelona" }
     ]
 };
 
 export const tableSlice = createSlice({
     name: 'table',
     initialState: initialState,
+    filteredTable: "",
+    selectedRows: [],
     checked: false,
+    page: 1,
+    pageSize: 10,
+    totalItems: 9,
+    table: [],
     reducers: {
         sortTable: (state, action) => {
             const param = action.payload;
+            console.log("Entrando en ordenación con " + param)
             state.table.sort((a, b) => {
                 if (a[param] < b[param]) return -1;
                 if (a[param] > b[param]) return 1;
@@ -70,10 +88,22 @@ export const tableSlice = createSlice({
             // pasan a formar parte del nuevo arreglo con filter aquellos elementos cuya expresión evalúe a True
             //Esta expresión se ejecuta para cada uno de ellos
             state.table = state.table.filter((row, index) => !state.selectedRows.includes(index));
-        }
+        },
+        setPage: (state, action) => {
+            state.page = action.payload;
+        },
+        setPageSize: (state, action) => {
+            state.pageSize = action.payload;
+        },
+        setTableData: (state, action) => {
+            state.table = action.payload;
+          },
+        setTotalItems: (state, action) => {
+            state.totalItems = action.payload;
+        },
     }
 });
 
-export const { sortTable, filteredTable, resetTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable } = tableSlice.actions;
+export const { sortTable, filteredTable, resetTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable, setPage, setPageSize, setTableData, setTotalItems } = tableSlice.actions;
 
 export default tableSlice.reducer;
