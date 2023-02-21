@@ -50,7 +50,7 @@ const DynamicTable = ({ actionButtons }) => {
     // funciones para el arrastre de filas
     const handleDragStart = (event, row) => {
         event.dataTransfer.setData('text/plain', JSON.stringify(row)) ;
-        console.log(row)
+        console.log(event, row)
     };
 
     const handleDragOver = (event) => {
@@ -82,7 +82,7 @@ const DynamicTable = ({ actionButtons }) => {
         }
 
         let totalRows = table.length;
-        console.log(totalRows);
+        // console.log(totalRows);
         dispatch(setTotalItems(totalRows));
     }, [pg, pgSize]);
 
@@ -115,7 +115,7 @@ const DynamicTable = ({ actionButtons }) => {
                     {
                         items.map((row, index) => {
                             return (
-                                <tr key={row.id} draggable onDragStart={(event) => handleDragStart(event, row)}>
+                                <tr key={index} id={index} draggable onDragStart={(event) => handleDragStart(event, row)}>
                                     {showIdColumn ? <td>{row.Id}</td> : <td>*****</td>}
                                     <td>{row.Nombre}</td>
                                     <td>{row.Edad}</td>

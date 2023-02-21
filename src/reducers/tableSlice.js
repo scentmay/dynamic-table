@@ -102,8 +102,9 @@ export const tableSlice = createSlice({
             state.totalItems = action.payload;
         },
         moveRow: (state, action) => {
-            const {Id, position} = action.payload;
-            const initialIndex = state.table.findIndex(row => row.Id === Id);
+            console.log("Entrando en moveRow..")
+            const {id, position} = action.payload;
+            const initialIndex = state.table.findIndex(row => row.Id === id);
             const row = state.table[initialIndex];
             //procedemos a eliminar fila de su posición original e introducirla en la posición final
             // cortamos en "initialIndex", una fila
