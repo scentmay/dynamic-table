@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+
 //redux
 import { Provider } from 'react-redux';
 import store from './app/store';
@@ -13,9 +14,14 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const router = createBrowserRouter([
   {
-    path:"/table",
+    path:"/table" , 
     element: <App />
-  }
+  },
+
+  {
+    path:"/table/:page/:pageSize",
+    element: <App />
+  },  
 ]);
 
 root.render(

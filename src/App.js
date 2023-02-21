@@ -5,8 +5,6 @@ import Form from './components/Form';
 import Pagination from './components/Pagination';
 
 function App() {
-
-
   const actionButtons = (
     <>
       <button>Borrar</button>
@@ -20,7 +18,7 @@ function App() {
         <Form />
       </header>
       <div className="content">
-        <DynamicTable actionButtons={actionButtons}/>
+        <DynamicTable actionButtons={actionButtons} />
       </div>
       <div className="pagination">
         <Pagination />

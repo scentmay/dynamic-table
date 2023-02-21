@@ -1,7 +1,8 @@
 import '../styles/DynamicTable.css';
-import { sortTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable, setTableData, setPageSize, setPage } from '../reducers/tableSlice.js'
+import { sortTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable, setTableData, setPageSize, setPage, moveRow } from '../reducers/tableSlice.js'
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 
 const DynamicTable = ({ actionButtons }) => {
@@ -10,9 +11,16 @@ const DynamicTable = ({ actionButtons }) => {
     const selectedRows = useSelector(state => state.table.selectedRows);
     const dispatch = useDispatch();
     const { page, pageSize, totalItems } = useSelector (state =>state.table);
+    
+    // traemos variables de la URL 
+    const params = useParams();
+    const pg = params.page;
+    const pgSize = params.pageSize;
+    console.log(pg, pgSize);
 
-    // console.log(selectedRows)
+  
 
+    //funciones de funcionamiento de la tabla, búsqueda, ordenación reseteo, checks...
     const handleSort = (param) => dispatch(sortTable(param));
     const handleCheck = () => {
         dispatch(toggleIdColumn());
@@ -39,23 +47,35 @@ const DynamicTable = ({ actionButtons }) => {
     const endIndex = Math.min(startIndex + pageSize, totalItems); 
     const items = useSelector(state => table.slice(startIndex, endIndex))
    
+    // funciones para el arrastre de filas
+    const handleDragStart = (event, row) => {
+        event.dataTransfer.setData('text/plain', JSON.stringify(row));
+    };
 
+    const handleDragOver = (event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDrop = (event, index) => {
+        event.preventDefault();
+        const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+        dispatch(moveRow(data.id));
+        console.log (data)
+    };
+
+
+    // useEffect inicial, extrae datos de la URL y los posiciona en la store
     useEffect(() => {
         //solicitud http para obtener los elementos de la página
         console.log("entrando en fetch")
-        fetch(`http://localhost:3000/table?page=${page}&pageSize=${pageSize}`)
-            .then(res => res.json())
-            .then((data) => {
-                console.log(data)
-                dispatch(setPage(data.page));
-                dispatch(setPageSize(data.pageSize));
-            })
-    }, [page, pageSize, dispatch]);
-
+        dispatch(setPage(Number(pg)));
+        dispatch(setPageSize(Number(pgSize)));
+    }, [pg, pgSize]);
 
     return (
         <div className="table-container">
-            <table className="table">
+            <table className="table" onDragOver={handleDragOver} onDrop={(event) => handleDrop(event)}>
                 <thead className="table-head">
                     <tr>
                         <th><input 
@@ -81,7 +101,7 @@ const DynamicTable = ({ actionButtons }) => {
                     {
                         items.map((row, index) => {
                             return (
-                                <tr key={index}>
+                                <tr key={row.id} draggable onDragStart={(event) => handleDragStart(event,row) }>
                                     {showIdColumn ? <td>{row.Id}</td> : <td>*****</td>}
                                     <td>{row.Nombre}</td>
                                     <td>{row.Edad}</td>

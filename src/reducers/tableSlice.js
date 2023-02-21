@@ -36,8 +36,8 @@ export const tableSlice = createSlice({
     selectedRows: [],
     checked: false,
     page: 1,
-    pageSize: 10,
-    totalItems: 9,
+    pageSize: 5,
+    totalItems: 18,
     table: [],
     reducers: {
         sortTable: (state, action) => {
@@ -101,9 +101,12 @@ export const tableSlice = createSlice({
         setTotalItems: (state, action) => {
             state.totalItems = action.payload;
         },
+        moveRow: (id, currentIndex, newIndex) => {
+
+        }
     }
 });
 
-export const { sortTable, filteredTable, resetTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable, setPage, setPageSize, setTableData, setTotalItems } = tableSlice.actions;
+export const { sortTable, filteredTable, resetTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable, setPage, setPageSize, setTableData, setTotalItems, moveRow } = tableSlice.actions;
 
 export default tableSlice.reducer;
