@@ -1,5 +1,5 @@
 import '../styles/DynamicTable.css';
-import { sortTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable, setTableData, setPageSize, setPage, moveRow } from '../reducers/tableSlice.js'
+import { sortTable, toggleIdColumn, selectOrDeselectAll, selectRow, deselectRow, trashTable, setTableData, setPageSize, setPage, moveRow, setTotalItems } from '../reducers/tableSlice.js'
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -16,7 +16,7 @@ const DynamicTable = ({ actionButtons }) => {
     const params = useParams();
     const pg = params.page;
     const pgSize = params.pageSize;
-    console.log(pg, pgSize);
+    // console.log(pg, pgSize);
 
 
 
@@ -49,7 +49,8 @@ const DynamicTable = ({ actionButtons }) => {
 
     // funciones para el arrastre de filas
     const handleDragStart = (event, row) => {
-        event.dataTransfer.setData('text/plain', JSON.stringify(row));
+        event.dataTransfer.setData('text/plain', JSON.stringify(row)) ;
+        console.log(row)
     };
 
     const handleDragOver = (event) => {
@@ -58,17 +59,20 @@ const DynamicTable = ({ actionButtons }) => {
     };
 
     //index es el indice del elemento que está donde se va a soltar la fila, lo pasamos como position
-    const handleDrop = (event, index) => {
+    const handleDrop = (event) => {
         event.preventDefault();
         const data = JSON.parse(event.dataTransfer.getData('text/plain'));
-        dispatch(moveRow({ id: data.id, position: index }));
+        const targetIndex = Number(event.target.parentNode.id);
+        console.log(event)
+        console.log({ id: data.Id, position: targetIndex })
+        dispatch(moveRow({ id: data.Id, position: targetIndex }));
     };
 
 
-    // useEffect inicial, extrae datos de la URL y los posiciona en la store
+    // useEffect inicial, extrae datos de la URL y los posiciona en la store.
+    // también cuenta el número de filas de la tabla y los setea como totalItems
     useEffect(() => {
-        //solicitud http para obtener los elementos de la página
-        console.log("entrando en fetch", pg, pgSize);
+        // console.log("entrando en fetch", pg, pgSize);
         if (pg == undefined || pgSize == undefined) {
             dispatch(setPage(1));
             dispatch(setPageSize(5));
@@ -77,8 +81,12 @@ const DynamicTable = ({ actionButtons }) => {
             dispatch(setPageSize(Number(pgSize)));
         }
 
+        let totalRows = table.length;
+        console.log(totalRows);
+        dispatch(setTotalItems(totalRows));
     }, [pg, pgSize]);
 
+  
     return (
         <div className="table-container">
             <table className="table" onDragOver={handleDragOver} onDrop={(event) => handleDrop(event)}>
