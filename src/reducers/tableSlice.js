@@ -101,8 +101,15 @@ export const tableSlice = createSlice({
         setTotalItems: (state, action) => {
             state.totalItems = action.payload;
         },
-        moveRow: (id, currentIndex, newIndex) => {
-
+        moveRow: (state, action) => {
+            const {id, position} = action.payload;
+            const initialIndex = state.table.findIndex(row => row.Id === id);
+            const row = state.table[initialIndex];
+            //procedemos a eliminar fila de su posición original e introducirla en la posición final
+            // cortamos en "initialIndex", una fila
+            state.table.splice(initialIndex,1);
+            //"pegamos" (no cortamos nada) en el indice final(position), el elemento especificado (row)
+            state.table.splice(position, 0, row)
         }
     }
 });

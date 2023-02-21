@@ -10,15 +10,15 @@ const DynamicTable = ({ actionButtons }) => {
     const table = useSelector(state => state.table.table);
     const selectedRows = useSelector(state => state.table.selectedRows);
     const dispatch = useDispatch();
-    const { page, pageSize, totalItems } = useSelector (state =>state.table);
-    
+    const { page, pageSize, totalItems } = useSelector(state => state.table);
+
     // traemos variables de la URL 
     const params = useParams();
     const pg = params.page;
     const pgSize = params.pageSize;
     console.log(pg, pgSize);
 
-  
+
 
     //funciones de funcionamiento de la tabla, búsqueda, ordenación reseteo, checks...
     const handleSort = (param) => dispatch(sortTable(param));
@@ -33,8 +33,8 @@ const DynamicTable = ({ actionButtons }) => {
     const handleSelection = (index) => {
         dispatch(
             selectedRows.includes(index)
-            ? deselectRow(index)
-            : selectRow(index)
+                ? deselectRow(index)
+                : selectRow(index)
         )
     }
 
@@ -44,9 +44,9 @@ const DynamicTable = ({ actionButtons }) => {
 
     // Calcula qué elementos se deben mostrar en la página actual
     const startIndex = (page - 1) * pageSize;
-    const endIndex = Math.min(startIndex + pageSize, totalItems); 
+    const endIndex = Math.min(startIndex + pageSize, totalItems);
     const items = useSelector(state => table.slice(startIndex, endIndex))
-   
+
     // funciones para el arrastre de filas
     const handleDragStart = (event, row) => {
         event.dataTransfer.setData('text/plain', JSON.stringify(row));
@@ -57,20 +57,26 @@ const DynamicTable = ({ actionButtons }) => {
         event.dataTransfer.dropEffect = 'move';
     };
 
+    //index es el indice del elemento que está donde se va a soltar la fila, lo pasamos como position
     const handleDrop = (event, index) => {
         event.preventDefault();
         const data = JSON.parse(event.dataTransfer.getData('text/plain'));
-        dispatch(moveRow(data.id));
-        console.log (data)
+        dispatch(moveRow({ id: data.id, position: index }));
     };
 
 
     // useEffect inicial, extrae datos de la URL y los posiciona en la store
     useEffect(() => {
         //solicitud http para obtener los elementos de la página
-        console.log("entrando en fetch")
-        dispatch(setPage(Number(pg)));
-        dispatch(setPageSize(Number(pgSize)));
+        console.log("entrando en fetch", pg, pgSize);
+        if (pg == undefined || pgSize == undefined) {
+            dispatch(setPage(1));
+            dispatch(setPageSize(5));
+        } else {
+            dispatch(setPage(Number(pg)));
+            dispatch(setPageSize(Number(pgSize)));
+        }
+
     }, [pg, pgSize]);
 
     return (
@@ -78,11 +84,11 @@ const DynamicTable = ({ actionButtons }) => {
             <table className="table" onDragOver={handleDragOver} onDrop={(event) => handleDrop(event)}>
                 <thead className="table-head">
                     <tr>
-                        <th><input 
+                        <th><input
                             type="checkbox"
                             checked={showIdColumn}
                             onChange={handleCheck}
-                            >
+                        >
                         </input>Id</th>
                         <th onClick={() => handleSort("Nombre")}>Nombre</th>
                         <th onClick={() => handleSort("Edad")}>Edad</th>
@@ -92,7 +98,7 @@ const DynamicTable = ({ actionButtons }) => {
                             onChange={handleSelectOrDeselectAll}
                             checked={selectedRows.length === table.length}
                         />
-                        <button className="trashButton" onClick={handletrash} ><i className="fa-solid fa-trash fa-sm"></i></button>
+                            <button className="trashButton" onClick={handletrash} ><i className="fa-solid fa-trash fa-sm"></i></button>
                         </th>
                         <th>Acciones</th>
                     </tr>
@@ -101,16 +107,16 @@ const DynamicTable = ({ actionButtons }) => {
                     {
                         items.map((row, index) => {
                             return (
-                                <tr key={row.id} draggable onDragStart={(event) => handleDragStart(event,row) }>
+                                <tr key={row.id} draggable onDragStart={(event) => handleDragStart(event, row)}>
                                     {showIdColumn ? <td>{row.Id}</td> : <td>*****</td>}
                                     <td>{row.Nombre}</td>
                                     <td>{row.Edad}</td>
                                     <td>{row.Ciudad}</td>
-                                    <td><input 
+                                    <td><input
                                         type="checkbox"
                                         onChange={() => handleSelection(index)}
                                         checked={selectedRows.includes(index)}
-                                        />
+                                    />
                                     </td>
                                     <td>{actionButtons}</td>
                                 </tr>
